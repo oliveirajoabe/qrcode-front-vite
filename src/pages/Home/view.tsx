@@ -4,6 +4,7 @@ import { ButtonField } from "../../components/Button";
 import useHomeModel from "./model";
 import { QRCode as QRCodeComponent } from "react-qrcode-logo";
 import { formatDate } from "../../utils/formatData";
+import { PulseLoader } from "react-spinners";
 
 export default function HomeView({
   errors,
@@ -23,10 +24,15 @@ export default function HomeView({
         className="flex justify-center"
       >
         <div className="flex gap-4 w-full flex-col sm:flex-row max-w-7xl">
-          <InputRoot className="w-full" error={!!errors?.url}>
+          <InputRoot
+            className="w-full"
+            error={!!errors?.url}
+            messageError={errors?.url?.message}
+          >
             <InputField
               type="text"
               placeholder="Inserir link"
+              inputMode="url"
               {...register("url")}
             />
             <InputIcon>
@@ -34,14 +40,16 @@ export default function HomeView({
             </InputIcon>
           </InputRoot>
 
-          <ButtonField>{isPending ? "..." : <CircleArrowRight />}</ButtonField>
+          <ButtonField>
+            {isPending ? (
+              <PulseLoader size={8} margin={1} color="#f8f9fa" />
+            ) : (
+              <CircleArrowRight />
+            )}
+          </ButtonField>
         </div>
-        {errors?.url && (
-          <p className="text-red-500 text-xs font-semibold">
-            {errors.url.message}
-          </p>
-        )}
       </form>
+
       {!!data && (
         <aside className="mt-16 flex justify-center">
           <div className="bg-purple-200 w-full p-4 rounded-md flex flex-col md:flex-row md:justify-between max-w-7xl">

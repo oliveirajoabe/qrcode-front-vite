@@ -3,17 +3,27 @@ import { twMerge } from "tailwind-merge";
 
 interface InputRootProps extends ComponentProps<"div"> {
   error?: boolean;
+  messageError?: string;
 }
-export function InputRoot({ error = false, ...props }: InputRootProps) {
+export function InputRoot({
+  error = false,
+  messageError,
+  ...props
+}: InputRootProps) {
   return (
-    <div
-      data-error={error}
-      className={twMerge(
-        "transition-all group border border-white flex items-center h-10 py-1 px-4 rounded-md focus-within:border-purple-200 data-[error=true]:border-red-500",
-        props.className
+    <div className="flex flex-col w-full">
+      <div
+        data-error={error}
+        className={twMerge(
+          "transition-all group border border-white flex items-center h-10 py-1 px-4 rounded-md focus-within:border-purple-200 data-[error=true]:border-red-500",
+          props.className
+        )}
+      >
+        {props.children}
+      </div>
+      {error && (
+        <p className="text-red-500 text-xs font-semibold">{messageError}</p>
       )}
-    >
-      {props.children}
     </div>
   );
 }

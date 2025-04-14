@@ -29,6 +29,7 @@ export default function useHomeModel() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<SubscriptionSchema>({
     resolver: zodResolver(subscriptionSchema),
@@ -53,6 +54,7 @@ export default function useHomeModel() {
       }
 
       const responseJson = response.json();
+      setValue("url", "");
 
       return responseJson;
     },
