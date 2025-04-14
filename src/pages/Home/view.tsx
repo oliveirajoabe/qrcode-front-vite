@@ -50,8 +50,9 @@ export default function HomeView({
                 <h2 className="text-xl">Link encurtado</h2>
                 <p>{data.url}</p>
                 <div className="flex gap-2 items-center mt-4">
-                  <p className="bg-white text-black px-2 rounded">
-                    {fullUrl}/{data.shortedUrl}
+                  <p className="bg-white text-black px-2 rounded w-[260px] truncate md:w-auto">
+                    {/* {fullUrl}/{data.shortedUrl} */}
+                    https://shortqr.vercel.app/2NbJDlnk
                   </p>
                   <ButtonField onClick={copyText}>
                     {isTextCopied ? <Check /> : <Copy />}
