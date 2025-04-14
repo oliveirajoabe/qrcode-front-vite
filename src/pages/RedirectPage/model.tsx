@@ -12,11 +12,13 @@ type ResponseUrlShort = {
   title?: string;
   url?: string;
   userId?: string;
+  message?: string;
+  statusCode?: number;
 };
 export default function useRedirectPageModel() {
   const params = useParams();
 
-  const { data, isFetched } = useQuery({
+  const { data, isFetched, error } = useQuery({
     queryKey: ["page"],
     queryFn: async () => {
       const response = await fetch(`${API_URL}/url/${params.id}`, {
@@ -26,11 +28,12 @@ export default function useRedirectPageModel() {
         },
       });
 
+      const responseJson: ResponseUrlShort = await response.json();
+
       if (!response.ok) {
-        throw new Error("Erro ao encurtar o link");
+        throw new Error(responseJson.message || "Erro ao buscar o link");
       }
 
-      const responseJson: ResponseUrlShort = await response.json();
       if (responseJson.url) {
         window.location.replace(responseJson.url);
       }
@@ -39,5 +42,5 @@ export default function useRedirectPageModel() {
     },
   });
 
-  return { loading: isFetched, data };
+  return { loading: isFetched, data, error };
 }
