@@ -1,4 +1,11 @@
-import { Check, CircleArrowRight, Copy, QrCode } from "lucide-react";
+import {
+  Check,
+  CircleArrowRight,
+  Copy,
+  MessageCircleMore,
+  Phone,
+  QrCode,
+} from "lucide-react";
 import { InputField, InputIcon, InputRoot } from "../../components/Input";
 import { ButtonField } from "../../components/Button";
 import useHomeModel from "./model";
@@ -16,39 +23,95 @@ export default function HomeView({
   data,
   isPending,
   fullUrl,
+  onSubscribeWhatsApp,
+  errorsZap,
+  registerZap,
+  handleSubmitZap,
 }: ReturnType<typeof useHomeModel>) {
   return (
     <div className="mt-60">
-      <form
-        onSubmit={handleSubmit(onSubscribe)}
-        className="flex justify-center"
-      >
-        <div className="flex gap-4 w-full flex-col sm:flex-row max-w-7xl">
-          <InputRoot
-            className="w-full"
-            error={!!errors?.url}
-            messageError={errors?.url?.message}
-          >
-            <InputField
-              type="text"
-              placeholder="Inserir link"
-              inputMode="url"
-              {...register("url")}
-            />
-            <InputIcon>
-              <QrCode />
-            </InputIcon>
-          </InputRoot>
+      <div className="flex gap-12 md:gap-10 flex-col md:flex-row">
+        <form
+          onSubmit={handleSubmit(onSubscribe)}
+          className="flex justify-center md:w-1/2"
+        >
+          <div className="flex gap-4 w-full flex-col max-w-7xl">
+            <h2>Encurtar link:</h2>
+            <InputRoot
+              className="w-full"
+              error={!!errors?.url}
+              messageError={errors?.url?.message}
+            >
+              <InputField
+                type="text"
+                placeholder="Inserir link"
+                inputMode="url"
+                {...register("url")}
+              />
+              <InputIcon>
+                <QrCode />
+              </InputIcon>
+            </InputRoot>
 
-          <ButtonField>
-            {isPending ? (
-              <PulseLoader size={8} margin={1} color="#f8f9fa" />
-            ) : (
-              <CircleArrowRight />
-            )}
-          </ButtonField>
-        </div>
-      </form>
+            <ButtonField>
+              {isPending ? (
+                <PulseLoader size={8} margin={1} color="#f8f9fa" />
+              ) : (
+                <CircleArrowRight />
+              )}
+            </ButtonField>
+          </div>
+        </form>
+
+        <hr className="border border-white h-auto" />
+
+        <form
+          className="flex justify-center md:w-1/2"
+          onSubmit={handleSubmitZap(onSubscribeWhatsApp)}
+        >
+          <div className="flex gap-4 w-full flex-col max-w-7xl">
+            <h2>Link whatsapp:</h2>
+            <InputRoot
+              className="w-full"
+              error={!!errorsZap?.messageText}
+              messageError={errorsZap?.messageText?.message}
+            >
+              <InputField
+                type="text"
+                placeholder="Mensagem de texto"
+                {...registerZap("messageText")}
+              />
+              <InputIcon>
+                <MessageCircleMore />
+              </InputIcon>
+            </InputRoot>
+
+            <InputRoot
+              className="w-full"
+              error={!!errorsZap?.phoneNumber}
+              messageError={errorsZap?.phoneNumber?.message}
+            >
+              <InputField
+                type="tel"
+                placeholder="Numero de celular"
+                inputMode="tel"
+                {...registerZap("phoneNumber")}
+              />
+              <InputIcon>
+                <Phone />
+              </InputIcon>
+            </InputRoot>
+
+            <ButtonField>
+              {isPending ? (
+                <PulseLoader size={8} margin={1} color="#f8f9fa" />
+              ) : (
+                <CircleArrowRight />
+              )}
+            </ButtonField>
+          </div>
+        </form>
+      </div>
 
       {!!data && (
         <aside className="mt-16 flex justify-center">

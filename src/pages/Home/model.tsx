@@ -4,6 +4,7 @@ import { z } from "zod";
 import { copyToClipboard } from "../../utils/copyToClipboard";
 import { useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
+import generateWhatsAppURL from "../../utils/generateWhatsAppURL";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -11,7 +12,13 @@ const subscriptionSchema = z.object({
   url: z.string().url("Insira uma url corretamente"),
 });
 
+const subscriptionSchemaZap = z.object({
+  messageText: z.string().optional(),
+  phoneNumber: z.string().min(3, "Insira no minimo 3 numeros"),
+});
+
 type SubscriptionSchema = z.infer<typeof subscriptionSchema>;
+type SubscriptionSchemaZap = z.infer<typeof subscriptionSchemaZap>;
 
 type ResponseUrlShort = {
   clicks: number;
@@ -33,6 +40,15 @@ export default function useHomeModel() {
     formState: { errors },
   } = useForm<SubscriptionSchema>({
     resolver: zodResolver(subscriptionSchema),
+  });
+
+  const {
+    register: registerZap,
+    handleSubmit: handleSubmitZap,
+    setValue: setValueZap,
+    formState: { errors: errorsZap },
+  } = useForm<SubscriptionSchemaZap>({
+    resolver: zodResolver(subscriptionSchemaZap),
   });
 
   const {
@@ -66,6 +82,11 @@ export default function useHomeModel() {
     createShortLink(data);
   }
 
+  async function onSubscribeWhatsApp(data: SubscriptionSchemaZap) {
+    const link = generateWhatsAppURL(data.phoneNumber, data.messageText);
+    createShortLink({ url: link });
+  }
+
   async function copyText() {
     const isCopy = await copyToClipboard(`${fullUrl}/${data?.shortedUrl}`);
     setIsTextCopied(!!isCopy);
@@ -82,5 +103,10 @@ export default function useHomeModel() {
     isPending,
     data,
     fullUrl,
+    onSubscribeWhatsApp,
+    registerZap,
+    handleSubmitZap,
+    setValueZap,
+    errorsZap,
   };
 }
